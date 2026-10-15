@@ -51,11 +51,6 @@ public class Main extends Application {
         startPickerClient();
         startOrderDashboard();
 
-        startCustomerClient();
-        startPickerClient();
-        startOrderDashboard();
-
-        startWarehouseClient();
         startWarehouseClient();
 
         // Initializes the order map for the OrderHub.
