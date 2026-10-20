@@ -19,6 +19,7 @@ public class ProductListFormatter {
      * @return A nicely formatted string representation of the product list with totals
      */
     public static String buildString(ArrayList<Product> proList) {
+        boolean append = true;
         StringBuilder sb = new StringBuilder();
         double totalPrice=0;
         for (Product pr : proList) {
@@ -32,7 +33,9 @@ public class ProductListFormatter {
                     pr.getOrderedQuantity(),
                     pr.getUnitPrice() * orderedQuantity);
 
-            sb.append(aProduct);
+            if(append){
+                sb.append(aProduct);
+            }
             totalPrice = totalPrice + pr.getUnitPrice() * orderedQuantity;
         }
 
