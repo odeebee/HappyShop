@@ -49,6 +49,10 @@ public class CustomerView  {
     // (e.g., positioning the removeProductNotifier when needed).
     private Stage viewWindow;
 
+    public Button btnSort;
+    public String[] sorts = {"A-Z ↑","A-Z ↓","ID ↑","ID ↓","Price ↑","Price ↓"};
+    public int sortNum = 0;
+
     public void start(Stage window) {
         VBox vbSearchPage = createSearchPage();
         vbTrolleyPage = CreateTrolleyPage();
@@ -139,11 +143,23 @@ public class CustomerView  {
         btnCheckout.setOnAction(this::buttonClicked);
         btnCheckout.setStyle(UIStyle.buttonStyle);
 
+        btnSort = new Button("Sort by: "+sorts[sortNum]);
+        btnSort.setOnAction(this::buttonClicked);
+        btnSort.setStyle(UIStyle.buttonStyle);
+
+        Button btnSortChange = new Button("Change");
+        btnSortChange.setOnAction((this::buttonClicked));
+        btnSortChange.setStyle((UIStyle.buttonStyle));
+
         HBox hbBtns = new HBox(10, btnCancel,btnCheckout);
-        hbBtns.setStyle("-fx-padding: 15px;");
+        hbBtns.setStyle("-fx-padding: 0px;");
         hbBtns.setAlignment(Pos.CENTER);
 
-        vbTrolleyPage = new VBox(15, laPageTitle, taTrolley, hbBtns);
+        HBox sortBtns = new HBox(10,btnSort,btnSortChange);
+        sortBtns.setStyle("-fx-padding: 15px;");
+        sortBtns.setAlignment(Pos.CENTER);
+
+        vbTrolleyPage = new VBox(15, laPageTitle, taTrolley, hbBtns, sortBtns);
         vbTrolleyPage.setPrefWidth(COLUMN_WIDTH);
         vbTrolleyPage.setAlignment(Pos.TOP_CENTER);
         vbTrolleyPage.setStyle("-fx-padding: 15px;");
@@ -192,6 +208,7 @@ public class CustomerView  {
             showTrolleyOrReceiptPage(vbReceiptPage);
             taReceipt.setText(receipt);
         }
+        btnSort.setText("Sort by: "+sorts[sortNum]);
     }
 
     // Replaces the last child of hbRoot with the specified page.

@@ -10,9 +10,7 @@ import ci553.happyshop.utility.ProductListFormatter;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 // This class includes TODO comments in addToTrolley() and checkout()
 // indicating possible extension ideas to explore.
@@ -72,6 +70,102 @@ public class CustomerModel {
         }
         updateView();
     }
+
+    void changeSortStyle(){
+        if(cusView.sortNum==5){cusView.sortNum=0;}else{cusView.sortNum+=1;}
+        updateView();
+    }
+
+    void sortTrolley(){
+
+        //{"A-Z ↑","A-Z ↓","ID ↑","ID ↓","Price ↑","Price ↓"};
+        //0=AZ ASC 1=AZ DES 2=ID ASC 3=ID DES 4=PRICE ASC 5=PRICE DES
+        int size = trolley.getProducts().size();
+
+        boolean ASC = true;
+        int[] sortingItems = new int[size];
+
+        //Creates array for sorting
+        Product[] temp = new Product[size];
+        //TODO change to for loop LOL
+        int counter = 0;
+        for(Product x : trolley.getProducts()){
+            temp[counter] = x;
+            counter+=1;
+        }
+
+        //Switch statement for sorting types
+        //TODO Shorten switch to 3 case and set ASC bool to the %2 value of sortNum
+        switch (cusView.sortNum){
+            case 0:
+                ASC = true;
+                for(int i = 0; i < trolley.getProducts().size(); i++){sortingItems[i] = temp[i].getProductDescription().charAt(0);}
+                break;
+            case 1:
+                ASC = false;
+                for(int i = 0; i < trolley.getProducts().size(); i++){sortingItems[i] = temp[i].getProductDescription().charAt(0);}
+                break;
+            case 2:
+                ASC = true;
+                for(int i = 0; i < trolley.getProducts().size(); i++){sortingItems[i] = Integer.parseInt(temp[i].getProductId());}
+                break;
+            case 3:
+                ASC = false;
+                for(int i = 0; i < trolley.getProducts().size(); i++){sortingItems[i] = Integer.parseInt(temp[i].getProductId());}
+                break;
+            case 4:
+                ASC = true;
+                for(int i = 0; i < trolley.getProducts().size(); i++){sortingItems[i] = (int)(temp[i].getUnitPrice());}
+                break;
+            case 5:
+                ASC = false;
+                for(int i = 0; i < trolley.getProducts().size(); i++){sortingItems[i] = (int)(temp[i].getUnitPrice());}
+                break;
+        }
+
+        //The sort DES
+        boolean swap = true;
+        while(swap){
+            swap = false;
+            for(int i = 0; i < temp.length; i++){
+                if(i != temp.length-1){
+                    if(ASC){
+                        if(sortingItems[i] > sortingItems[i+1]){
+
+                            Product holder = temp[i+1];
+                            temp[i+1] = temp[i];
+                            temp[i] = holder;
+
+                            int holder2 = sortingItems[i+1];
+                            sortingItems[i+1] = sortingItems[i];
+                            sortingItems[i] = holder2;
+
+                            swap = true;
+                        }
+                    }
+                    if(!ASC){
+                        if(sortingItems[i] < sortingItems[i+1]){
+
+                            Product holder = temp[i+1];
+                            temp[i+1] = temp[i];
+                            temp[i] = holder;
+
+                            int holder2 = sortingItems[i+1];
+                            sortingItems[i+1] = sortingItems[i];
+                            sortingItems[i] = holder2;
+
+                            swap = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        ArrayList<Product> sorted = new ArrayList<>(Arrays.asList(temp));
+        trolleyContentsText = ProductListFormatter.buildString(sorted);
+        updateView();
+    }
+
 
     void addToTrolley(){
         if(searchResult != null){
