@@ -25,3 +25,7 @@ see the comment in Launcher.java for details.
 - JavaFX project
 - Developed in IntelliJ with Maven
 - Easy setup and run
+
+## FEATURES
+- Organised grouping with items
+- Sorting system for trolley
