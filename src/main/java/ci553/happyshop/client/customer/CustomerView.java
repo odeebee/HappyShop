@@ -1,5 +1,6 @@
 package ci553.happyshop.client.customer;
 
+import ci553.happyshop.Execptions.ExcessiveOrderQuantityException;
 import ci553.happyshop.utility.UIStyle;
 import ci553.happyshop.utility.WinPosManager;
 import ci553.happyshop.utility.WindowBounds;
@@ -187,7 +188,7 @@ public class CustomerView  {
     }
 
 
-    private void buttonClicked(ActionEvent event) {
+    private void buttonClicked(ActionEvent event){
         Button btn = (Button)event.getSource();
         String action = btn.getText();
         if(action.equals("Add to Trolley")){

@@ -1,5 +1,7 @@
 package ci553.happyshop.client.customer;
 
+import ci553.happyshop.Execptions.ExcessiveOrderQuantityException;
+import ci553.happyshop.Execptions.UnderMinimumPaymentException;
 import ci553.happyshop.catalogue.Order;
 import ci553.happyshop.catalogue.Product;
 import ci553.happyshop.catalogue.Trolley;
@@ -7,6 +9,7 @@ import ci553.happyshop.storageAccess.DatabaseRW;
 import ci553.happyshop.orderManagement.OrderHub;
 import ci553.happyshop.utility.StorageLocation;
 import ci553.happyshop.utility.ProductListFormatter;
+import javafx.scene.control.Alert;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -42,6 +45,7 @@ public class CustomerModel {
     public CustomerModel(DatabaseRW databaseRW){
         this.databaseRW = databaseRW;
     }
+
 
     //SELECT productID, description, image, unitPrice,inStock quantity
     void search(){
@@ -184,8 +188,33 @@ public class CustomerModel {
         updateView();
     }
 
-    public void checkOut()  {
+    public String validateTrolley(){
+        int total = 0;
+        for(Product p : trolley.getProducts()){
+            if(p.getOrderedQuantity() > 50){
+                p.setOrderedQuantity(50);
+                return "Excessive";
+            }
+            total = total + (int) p.getUnitPrice();
+        }
+        if(total <= 5){
+            return "Under";
+        }
+        return "Accepted";
+    }
+
+    public void checkOut() throws ExcessiveOrderQuantityException, UnderMinimumPaymentException {
         if(!trolley.getProducts().isEmpty()){
+
+            //THROWS HERE
+            if(validateTrolley().equals("Excessive")){
+                updateView();
+                throw new ExcessiveOrderQuantityException("You have ordered over the alloted stock limit (50) and your trolley has been corrected - please try again.",this);
+            }
+            if(validateTrolley().equals("Under")){
+                throw new UnderMinimumPaymentException(("You have ordered under the minimum spend (£5) and your trolley has been cleared - please try again."));
+            }
+
             // Group the products in the trolley by productId to optimize stock checking
             // Check the database for sufficient stock for all products in the trolley.
             // If any products are insufficient, the update will be rolled back.
@@ -266,7 +295,7 @@ public class CustomerModel {
         receiptContentsText ="";
     }
 
-    void updateView() {
+    public void updateView() {
         if(searchResult != null){
             searchResultImageName = searchResult.getProductImageName();
             String relativeImageUrl = StorageLocation.imageFolder + searchResultImageName; //relative file path, eg images/0001.jpg
