@@ -29,3 +29,4 @@ see the comment in Launcher.java for details.
 ## FEATURES
 - Organised grouping with items
 - Sorting system for trolley
+- Custom exceptions for certain criteria
