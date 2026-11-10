@@ -193,11 +193,14 @@ public class CustomerModel {
         for(Product p : trolley.getProducts()){
             if(p.getOrderedQuantity() > 50){
                 p.setOrderedQuantity(50);
+                updateView();
                 return "Excessive";
             }
-            total = total + (int) p.getUnitPrice();
+            total = total + (int) p.getUnitPrice() * p.getOrderedQuantity();
         }
+
         if(total <= 5){
+            System.out.println("TOTAL COST" + total);
             return "Under";
         }
         return "Accepted";
@@ -205,13 +208,13 @@ public class CustomerModel {
 
     public void checkOut() throws ExcessiveOrderQuantityException, UnderMinimumPaymentException {
         if(!trolley.getProducts().isEmpty()){
-
+            String s = validateTrolley();
+            sortTrolley();
             //THROWS HERE
-            if(validateTrolley().equals("Excessive")){
-                updateView();
-                throw new ExcessiveOrderQuantityException("You have ordered over the alloted stock limit (50) and your trolley has been corrected - please try again.",this);
+            if(s.equals("Excessive")){
+                throw new ExcessiveOrderQuantityException("You have ordered over the allowed stock limit (50) and your trolley has been corrected - please try again.",this);
             }
-            if(validateTrolley().equals("Under")){
+            if(s.equals("Under")){
                 throw new UnderMinimumPaymentException(("You have ordered under the minimum spend (£5) and your trolley has been cleared - please try again."));
             }
 
